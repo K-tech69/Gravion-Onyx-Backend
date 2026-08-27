@@ -14,20 +14,20 @@ export default async function handler(req, res) {
 
   try {
   const apiKey = process.env.GEMINI_API_KEY;
-const response = await fetch(
-  `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
-  {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: message }] }],
-      systemInstruction: { parts: [{ text: systemPrompt }] },
-      generationConfig: { maxOutputTokens: 120, temperature: 0.7 }
-    })
-  }
-);
+    const response = await fetch(
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=' + apiKey,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: message }] }],
+          systemInstruction: { parts: [{ text: systemPrompt }] },
+          generationConfig: { maxOutputTokens: 120, thinkingConfig: { thinkingLevel: "minimal" } }
+        })
+      }
+    );
     const data = await response.json();
-    const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry Master, my brain blanked for a second — try again?";
+    const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || ("DEBUG: " + JSON.stringify(data).slice(0, 350));
     res.status(200).json({ reply });
   } catch (e) {
     res.status(500).json({ error: 'Server error', detail: String(e) });
