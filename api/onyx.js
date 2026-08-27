@@ -13,20 +13,19 @@ export default async function handler(req, res) {
     : "You are Onyx, a witty, emotionally expressive AI assistant embedded in Pradeep's real estate website 'Gravion Property Consultancy'. You can discuss ANYTHING, not just real estate. Keep replies short (1-3 sentences), warm, a little playful, and call the user 'Master'.";
 
   try {
-    const apiKey = process.env.GEMINI_API_KEY;
-        const response = await fetch(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=' + apiKey,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: message }] }],
-          systemInstruction: { parts: [{ text: systemPrompt }] },
-          generationConfig: { maxOutputTokens: 120 },
-          thinkingConfig: { thinkingLevel: "minimal" }
-        })
-      }
-    );
+  const apiKey = process.env.GEMINI_API_KEY;
+const response = await fetch(
+  `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+  {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: message }] }],
+      systemInstruction: { parts: [{ text: systemPrompt }] },
+      generationConfig: { maxOutputTokens: 120, temperature: 0.7 }
+    })
+  }
+);
     const data = await response.json();
     const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry Master, my brain blanked for a second — try again?";
     res.status(200).json({ reply });
