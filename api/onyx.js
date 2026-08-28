@@ -33,7 +33,7 @@ export default async function handler(req, res) {
       }
     );
     const data = await response.json();
-    const reply = data?.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('') || "Sorry Master, my brain blanked for a second — try again?";
+    const reply = data?.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('') || ("DEBUG: " + JSON.stringify(data).slice(0, 400));
     res.status(200).json({ reply });
   } catch (e) {
     res.status(500).json({ error: 'Server error', detail: String(e) });
