@@ -25,15 +25,14 @@ export default async function handler(req, res) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contents,
+                   contents,
           systemInstruction: { parts: [{ text: systemPrompt }] },
-          tools: [{ google_search: {} }],
           generationConfig: { maxOutputTokens: 220, thinkingConfig: { thinkingLevel: "minimal" } }
         })
       }
     );
     const data = await response.json();
-    const reply = data?.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('') || ("DEBUG: " + JSON.stringify(data).slice(0, 400));
+    const reply = data?.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('') || "Sorry Master, my brain blanked for a second — try again?";
     res.status(200).json({ reply });
   } catch (e) {
     res.status(500).json({ error: 'Server error', detail: String(e) });
